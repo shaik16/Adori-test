@@ -17,6 +17,8 @@ steps:
       - '-t'
       - 'gcr.io/${PROJECT_ID}/adori-test:latest'
       - '.'
+  - name: 'gcr.io/cloud-builders/docker' # Add this step
+    args: ['push', 'gcr.io/${PROJECT_ID}/adori-test:latest']
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'run'
