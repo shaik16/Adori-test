@@ -1,16 +1,37 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      - build
-      - '--build-arg=NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${_NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}'
-      - '--build-arg=CLERK_SECRET_KEY=${_CLERK_SECRET_KEY}'
-      - '--build-arg=NEXT_PUBLIC_CLERK_SIGN_IN_URL=${_NEXT_PUBLIC_CLERK_SIGN_IN_URL}'
-      - '--build-arg=NEXT_PUBLIC_CLERK_SIGN_UP_URL=${_NEXT_PUBLIC_CLERK_SIGN_UP_URL}'
-      - '--build-arg=NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=${_NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL}'
-      - '--build-arg=NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=${_NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL}'
+      - 'build'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${_NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}'
+      - '--build-arg'
+      - 'CLERK_SECRET_KEY=${_CLERK_SECRET_KEY}'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_CLERK_SIGN_IN_URL=${_NEXT_PUBLIC_CLERK_SIGN_IN_URL}'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_CLERK_SIGN_UP_URL=${_NEXT_PUBLIC_CLERK_SIGN_UP_URL}'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=${_NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL}'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=${_NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL}'
       - '-t'
-      - 'gcr.io/applied-honor-105708/adori-tes'
+      - 'gcr.io/${PROJECT_ID}/adori-test:latest'
       - '.'
-
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'adori-test' # Replace with your Cloud Run service name
+      - '--image=gcr.io/${PROJECT_ID}/adori-test:latest'
+      - '--region=us-central1' # Replace with your Cloud Run region
+      - '--platform=managed'
+      - '--set-env-vars=NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${_NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY},CLERK_SECRET_KEY=${_CLERK_SECRET_KEY},NEXT_PUBLIC_CLERK_SIGN_IN_URL=${_NEXT_PUBLIC_CLERK_SIGN_IN_URL},NEXT_PUBLIC_CLERK_SIGN_UP_URL=${_NEXT_PUBLIC_CLERK_SIGN_UP_URL},NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=${_NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL},NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=${_NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL}'
 images:
-  - 'gcr.io/applied-honor-105708/adori-test'
+  - 'gcr.io/${PROJECT_ID}/adori-test:latest'
+substitutions:
+  _NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: 'your_public_key'
+  _CLERK_SECRET_KEY: 'your_secret_key'
+  _NEXT_PUBLIC_CLERK_SIGN_IN_URL: 'your_sign_in_url'
+  _NEXT_PUBLIC_CLERK_SIGN_UP_URL: 'your_sign_up_url'
+  _NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL: 'your_redirect_sign_in_url'
+  _NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL: 'your_redirect_sign_up_url'
